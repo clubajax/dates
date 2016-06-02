@@ -1,5 +1,5 @@
 /* UMD.define */ (function (root, factory) {
-    if (typeof customLoader === 'function'){ customLoader(factory, 'date'); }
+    if (typeof customLoader === 'function'){ customLoader(factory, 'dates'); }
     else if (typeof define === 'function' && define.amd){ define([], factory); }
     else if(typeof exports === 'object'){ module.exports = factory(); }
     else{ root.returnExports = factory();
