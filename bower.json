@@ -1,0 +1,14 @@
+{
+    "name": "date",
+    "version": "1.0.0",
+    "authors": [
+        "Mike Wilcox <anm9tr@gmail.com>"
+    ],
+    "description": "A simple utility library for handling dates",
+    "license": "MIT",
+    "ignore": [
+        "node_modules",
+        "bower_components"
+    ],
+    "main": "src/date.js"
+}
