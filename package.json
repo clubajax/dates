@@ -1,13 +1,13 @@
 {
 	"author": "Mike Wilcox @clubajax",
-	"name": "on",
-	"main":"src/date.js",
+	"name": "dates",
+	"main":"src/dates.js",
 	"description": "A simple utility library for handling dates.",
 	"version": "1.0.0",
 	"license": "MIT",
     "readmeFilename": "README.md",
 	"repository": {
         "type": "git",
-        "url": "git://github.com/clubajax/date.git"
+        "url": "git://github.com/clubajax/dates.git"
     }
 }
