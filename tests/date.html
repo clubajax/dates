@@ -126,6 +126,17 @@
 
             });
 
+            test('it should add days', function () {
+                var result;
+
+                result = dates.addDays(new Date(2016, 2, 5), 1);
+                expect(dates.formatDate(result)).to.equal(dates.formatDate(new Date(2016, 2, 6)));
+
+                result = dates.addDays(new Date(2016, 2, 5), 45);
+                expect(dates.formatDate(result)).to.equal(dates.formatDate(new Date(2016, 3, 19)));
+
+            });
+
         });
 
         mocha.run();

@@ -298,6 +298,12 @@
         return hours + ':' + pad(minutes) + ' ' + period + ' on ' + pad(month) + '/' + pad(day) + '/' + year;
     }
 
+    function addDays (date, days) {
+        var d = new Date(date.getTime());
+        d.setDate(d.getDate() + days);
+        return d;
+    }
+
     function subtract(date, days) {
         // subtract N days from date
         var time = date.getTime();
@@ -371,6 +377,7 @@
         },
         length: length,
         subtract: subtract,
+        addDays: addDays,
         diff: diff,
         toISO: toISO,
         isValid: isDateType,
