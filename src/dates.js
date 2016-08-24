@@ -312,8 +312,8 @@
     }
 
     function subtractDate(date1, date2, datepart) {
-
-        // past dates have a postive value
+        // datepart: week, day, hr, min, sec
+        // past dates have a positive value
         // future dates have a negative value
 
         var divideBy = {
