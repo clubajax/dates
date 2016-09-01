@@ -83,6 +83,7 @@
                 }
                 var compareDate = new Date(2016, 2, 5);
                 expect(dates.subtract(compareDate, 1, 'month').getTime()).to.equal(getTime(2016, 1, 5));
+                expect(dates.subtract(compareDate, -1, 'month').getTime()).to.equal(getTime(2016, 3, 5));
                 expect(dates.subtract(compareDate, 3, 'month').getTime()).to.equal(getTime(2015, 11, 5));
             });
             test('it should subtract years', function () {
@@ -148,9 +149,26 @@
                 result = dates.addDays(new Date(2016, 2, 5), 1);
                 expect(dates.formatDate(result)).to.equal(dates.formatDate(new Date(2016, 2, 6)));
 
-                result = dates.addDays(new Date(2016, 2, 5), 45);
+                result = dates.add(new Date(2016, 2, 5), 45);
                 expect(dates.formatDate(result)).to.equal(dates.formatDate(new Date(2016, 3, 19)));
 
+            });
+            test('it should add months', function () {
+                function getTime(y, m, d){
+                    return (new Date(y, m, d)).getTime();
+                }
+                var compareDate = new Date(2016, 2, 5);
+                expect(dates.add(compareDate, 1, 'month').getTime()).to.equal(getTime(2016, 3, 5));
+                expect(dates.add(compareDate, -1, 'month').getTime()).to.equal(getTime(2016, 1, 5));
+                expect(dates.add(compareDate, 11, 'month').getTime()).to.equal(getTime(2017, 1, 5));
+            });
+            test('it should add years', function () {
+                function getTime(y, m, d){
+                    return (new Date(y, m, d)).getTime();
+                }
+                var compareDate = new Date(2016, 2, 5);
+                expect(dates.add(compareDate, 1, 'year').getTime()).to.equal(getTime(2017, 2, 5));
+                expect(dates.add(compareDate, 3, 'year').getTime()).to.equal(getTime(2019, 2, 5));
             });
 
         });

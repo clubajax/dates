@@ -299,9 +299,12 @@
     }
 
     function addDays (date, days) {
-        var d = new Date(date.getTime());
-        d.setDate(d.getDate() + days);
-        return d;
+        console.warn('addDays is deprecated. Instead, use `add`');
+        return add(date, days);
+    }
+
+    function add (date, amount, dateType) {
+        return subtract(date, -amount, dateType);
     }
 
     function subtract(date, amount, dateType) {
@@ -388,6 +391,7 @@
         },
         length: length,
         subtract: subtract,
+        add: add,
         addDays: addDays,
         diff: diff,
         toISO: toISO,
