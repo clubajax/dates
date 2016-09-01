@@ -304,15 +304,26 @@
         return d;
     }
 
-    function subtract(date, days) {
+    function subtract(date, amount, dateType) {
         // subtract N days from date
-        var time = date.getTime();
+        var
+            time = date.getTime(),
+            tmp = new Date(time);
 
-        return new Date(time - length.day * days);
+        if(dateType === 'month'){
+            tmp.setMonth(tmp.getMonth() - amount);
+            return tmp;
+        }
+        if(dateType === 'year'){
+            tmp.setFullYear(tmp.getFullYear() - amount);
+            return tmp;
+        }
+
+        return new Date(time - length.day * amount);
     }
 
-    function subtractDate(date1, date2, datepart) {
-        // datepart: week, day, hr, min, sec
+    function subtractDate(date1, date2, dateType) {
+        // dateType: week, day, hr, min, sec
         // past dates have a positive value
         // future dates have a negative value
 
@@ -326,9 +337,9 @@
             utc1 = Date.UTC(date1.getFullYear(), date1.getMonth(), date1.getDate()),
             utc2 = Date.UTC(date2.getFullYear(), date2.getMonth(), date2.getDate());
 
-        datepart = datepart.toLowerCase();
+        dateType = dateType.toLowerCase();
 
-        return Math.floor((utc2 - utc1) / divideBy[datepart]);
+        return Math.floor((utc2 - utc1) / divideBy[dateType]);
     }
 
     function diff(date1, date2) {
@@ -405,7 +416,7 @@
             from: function(str) {
                 // 2015-05-26T00:00:00
 
-                // strip crazy Z suffix (supossed to timezone) // 2015-05-26T00:00:00Z
+                // strip timezone // 2015-05-26T00:00:00Z
                 str = str.split('Z')[0];
 
                 // ["2000-02-30T00:00:00", "2000", "02", "30", "00", "00", "00", index: 0, input: "2000-02-30T00:00:00"]

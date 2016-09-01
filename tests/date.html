@@ -66,7 +66,7 @@
                 expect(dates.formatDate(ts, 'M d, yyyy')).to.equal('Jan 26, 2016')
             });
 
-            test('it should subtract dates', function () {
+            test('it should subtract days', function () {
                 function getTime(y, m, d){
                     return (new Date(y, m, d)).getTime();
                 }
@@ -76,6 +76,22 @@
                 expect(dates.subtract(compareDate, 3).getTime()).to.equal(getTime(2016, 2, 2));
                 expect(dates.subtract(compareDate, 4).getTime()).to.equal(getTime(2016, 2, 1));
                 expect(dates.subtract(compareDate, 5).getTime()).to.equal(getTime(2016, 1, 29));
+            });
+            test('it should subtract months', function () {
+                function getTime(y, m, d){
+                    return (new Date(y, m, d)).getTime();
+                }
+                var compareDate = new Date(2016, 2, 5);
+                expect(dates.subtract(compareDate, 1, 'month').getTime()).to.equal(getTime(2016, 1, 5));
+                expect(dates.subtract(compareDate, 3, 'month').getTime()).to.equal(getTime(2015, 11, 5));
+            });
+            test('it should subtract years', function () {
+                function getTime(y, m, d){
+                    return (new Date(y, m, d)).getTime();
+                }
+                var compareDate = new Date(2016, 2, 5);
+                expect(dates.subtract(compareDate, 1, 'year').getTime()).to.equal(getTime(2015, 2, 5));
+                expect(dates.subtract(compareDate, 3, 'year').getTime()).to.equal(getTime(2013, 2, 5));
             });
             test('it should return the difference between two dates', function () {
                 expect(dates.diff(new Date(2016, 2, 31), new Date(2016, 2, 21))).to.equal(10);
