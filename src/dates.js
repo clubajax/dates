@@ -96,15 +96,20 @@
         return !(year % 400) || (!(year % 4) && !!(year % 100));
     }
 
+    function isValidObject (date) {
+        var ms;
+        if (typeof date === 'object' && date instanceof Date) {
+            ms = date.getTime();
+            return !isNaN(ms) && ms > 0;
+        }
+        return false;
+    }
+
     function isDateType(value) {
         var parts, day, month, year, hours, minutes, seconds, ms;
         switch (typeof value) {
             case 'object':
-                if (value instanceof Date) {
-                    ms = value.getTime();
-                    return !isNaN(ms) && ms > 0;
-                }
-                return false;
+                return isValidObject(value);
             case 'string':
                 // is it a date in US format?
                 parts = dateRegExp.exec(value);
@@ -345,12 +350,33 @@
         return Math.floor((utc2 - utc1) / divideBy[dateType]);
     }
 
+    function isLess (d1, d2) {
+        if(isValidObject(d1) && isValidObject(d2)){
+            return d1.getTime() < d2.getTime();
+        }
+        return false;
+    }
+
+    function isGreater (d1, d2) {
+        if(isValidObject(d1) && isValidObject(d2)){
+            return d1.getTime() > d2.getTime();
+        }
+        return false;
+    }
+
     function diff(date1, date2) {
         // return the difference between 2 dates in days
         var utc1 = Date.UTC(date1.getFullYear(), date1.getMonth(), date1.getDate()),
             utc2 = Date.UTC(date2.getFullYear(), date2.getMonth(), date2.getDate());
 
         return Math.abs(Math.floor((utc2 - utc1) / length.day));
+    }
+
+    function copy (date) {
+        if(isValidObject(date)){
+            return new Date(date.getTime());
+        }
+        return date;
     }
 
     function getNaturalDay(date, compareDate, noDaysOfWeek) {
@@ -394,7 +420,12 @@
         add: add,
         addDays: addDays,
         diff: diff,
+        copy: copy,
+        clone: copy,
+        isLess: isLess,
+        isGreater: isGreater,
         toISO: toISO,
+        isValidObject: isValidObject,
         isValid: isDateType,
         isDateType: isDateType,
         isLeapYear: isLeapYear,

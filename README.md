@@ -32,11 +32,16 @@ dates supports all modern browsers, and is tested on IE10 and up.
  * `getNaturalDay(date, compareDate, noDaysOfWeek)` - Returns simple natural dates (Yesterday, Today, Tommorrow) or the date. Will add Mon, Tues, etc, unless `noDaysOfWeek` is true. `compareDate` is usually the current date.
  * `timestamp.to(date)` - Returns a timestamp based on the date object.
  * `timestamp.from(string)` - Returns a date based on the timestamp.
- * `subtract(date, days)` - Subtracts N days from a date object.
+ * `subtract(date, amount, dateType)` - Subtracts N "something" (day, week, month, year) from a date object.
+ * `add(date, amount, dateType)` - Adds N "something" (day, week, month, year) from a date object.
  * `subtractDate(date1, date2, datepart)` - Subtracts date1 from date2 and returns the difference based on the increment of the third parameter (in days, weeks, etc).
- * `addDays(date, days)` - Adds N days to a date object.
+ * `addDays(date, days)` - DEPRECATED - use `add()`;
+ * `copy(date)` - Returns a copy of a date object.
+ * `isLess(date1, date2)` - Returns if first date is less than second date.
+ * `isGreater(date1, date2)` - Returns if first date is greater than second date.
  * `diff(date1, date2)` - The difference, in days, between two date objects. Always a positive value.
  * `isValid(date)` - Determines if the date object or date string is a valid date.
+ * `isValidObject(value)` - Determines if the value is a valid date object.
  * `isLeapYear(dateOrYear)` - Determines if the date or year is a leap year.
  * `getMonthIndex(name)` - Returns the zero-based index, given a month name, which can be a full name or abbreviation (January or Jan).
  * `getFirstSunday(date)` - For use in building calendars.
