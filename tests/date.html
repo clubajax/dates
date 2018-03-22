@@ -29,8 +29,53 @@
                 expect = chai.expect,
                 dates = window.dates;
 
+            test('it should add time to the date object', function () {
+				var date = dates.toDate('12/12/2020 02:20 pm');
+				expect(date.getHours()).to.equal(14);
+				expect(date.getMinutes()).to.equal(20);
+
+				date = dates.toDate('2015-05-26T14:20:30');
+				expect(date.getHours()).to.equal(14);
+				expect(date.getMinutes()).to.equal(20);
+				expect(date.getSeconds()).to.equal(30);
+
+				console.log(date);
+			});
+
+            test('it should get the time from a timestamp', function () {
+				var date = dates.fromTimestamp('2016-01-26T16:23:32.467');
+				expect(date.getHours()).to.equal(16);
+				expect(date.getMinutes()).to.equal(23);
+				expect(date.getSeconds()).to.equal(32);
+			});
+
+			test.only('it should format a date based on a pattern', function () {
+				var date = new Date(2015, 0, 1),
+					ts = dates.fromTimestamp('2016-01-26T16:23:32.467');
+
+				expect(dates.format(date, 'MM dd yyyy')).to.equal('01 01 2015');
+				expect(dates.format(date, 'M d yyyy')).to.equal('1 1 2015');
+				expect(dates.format(date, 'MMMM dd yyyy')).to.equal('January 01 2015');
+				expect(dates.format(date, 'MMM dd, yyyy')).to.equal('Jan 01, 2015');
+				expect(dates.format(date, 'MM/dd/yy')).to.equal('01/01/15');
+				expect(dates.format(date, 'yyyy/MM/dd')).to.equal('2015/01/01');
+				expect(dates.format(ts, 'MMM d, yyyy')).to.equal('Jan 26, 2016');
+				expect(dates.format(ts, 'yyyy/MM/dd h:m A')).to.equal('2016/01/26 04:23 AM');
+				expect(dates.format(date, 'yyyy/MM/dd h:m A')).to.equal('2015/01/01 12:00 AM');
+				expect(dates.format(ts, 'h:m A')).to.equal('04:23 AM');
+				expect(dates.format(ts, 'H:m a')).to.equal('16:23 am');
+
+				console.log('time.fmt', dates.format(date, 'yyyy/MM/dd h:m A'));
+
+				console.log(ts.getMilliseconds());
+
+			});
+
             test('it should check valid dates', function () {
-                expect(dates.isValid('11/20/1980')).to.equal(true);
+
+				expect(dates.isValid('12/12/201')).to.equal(false);
+
+            	expect(dates.isValid('11/20/1980')).to.equal(true);
                 expect(dates.isValid('2015-05-26T00:00:00')).to.equal(true);
 
                 expect(dates.isValid('02/30/1980')).to.equal(false);
@@ -59,17 +104,7 @@
                 expect(string(dates.toDate('02/28/2000'))).to.equal('02/28/2000');
             });
 
-            test('it should format a date based on a pattern', function () {
-                var date = new Date(2015, 0, 1),
-                    ts = dates.fromTimestamp('2016-01-26T16:23:32.467');
-                expect(dates.format(date, 'mm dd yyyy')).to.equal('01 01 2015');
-                expect(dates.format(date, 'm d yyyy')).to.equal('1 1 2015');
-                expect(dates.format(date, 'MM dd yyyy')).to.equal('January 01 2015');
-                expect(dates.format(date, 'M dd, yyyy')).to.equal('Jan 01, 2015');
-                expect(dates.format(date, 'mm/dd/yy')).to.equal('01/01/15');
-                expect(dates.format(date, 'yyyy/mm/dd')).to.equal('2015/01/01');
-                expect(dates.format(ts, 'M d, yyyy')).to.equal('Jan 26, 2016')
-            });
+
 
             test('it should subtract days', function () {
                 function getTime(y, m, d){
