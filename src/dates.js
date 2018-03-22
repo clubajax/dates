@@ -1,9 +1,17 @@
 (function (root, factory) {
-	if (typeof customLoader === 'function'){ customLoader(factory, 'dates'); }
-	else if (typeof define === 'function' && define.amd){ define([], factory); }
-	else if(typeof exports === 'object'){ module.exports = factory(); }
-	else{ root.returnExports = factory();
-		window.dates = factory(); }
+	if (typeof customLoader === 'function') {
+		customLoader(factory, 'dates');
+	}
+	else if (typeof define === 'function' && define.amd) {
+		define([], factory);
+	}
+	else if (typeof exports === 'object') {
+		module.exports = factory();
+	}
+	else {
+		root.returnExports = factory();
+		window.dates = factory();
+	}
 }(this, function () {
 
 	'use strict';
@@ -14,9 +22,9 @@
 		// 2015-05-26T00:00:00
 		tsRegExp = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})\b/,
 
-		timeRegExp = /(\d\d):(\d\d)\s([ap]m)|(\d\d):(\d\d):(\d\d)/i,
+		timeRegExp = /(\d\d):(\d\d)(?:\s|:)(\d\d|[ap]m)(?:\s)*([ap]m)*/i,
 
-	daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+		daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
 		days = [],
 		days3 = [],
 		dayDict = {},
@@ -30,29 +38,29 @@
 		//
 		datePattern = /yyyy|yy|MMMM|MMM|MM|M|dd|d|H|h|m|s|A|a/g,
 		datePatternLibrary = {
-			yyyy: function(date) {
+			yyyy: function (date) {
 				return date.getFullYear();
 			},
-			yy: function(date) {
+			yy: function (date) {
 				return (date.getFullYear() + '').substring(2);
 			},
-			MMMM: function(date) {
+			MMMM: function (date) {
 				return months[date.getMonth()];
 			},
-			MMM: function(date) {
+			MMM: function (date) {
 				return monthAbbr[date.getMonth()];
 
 			},
-			MM: function(date) {
+			MM: function (date) {
 				return pad(date.getMonth() + 1);
 			},
-			M: function(date) {
+			M: function (date) {
 				return date.getMonth() + 1;
 			},
-			dd: function(date) {
+			dd: function (date) {
 				return pad(date.getDate());
 			},
-			d: function(date) {
+			d: function (date) {
 				return date.getDate();
 			},
 			H: function (date) {
@@ -88,7 +96,7 @@
 
 		dates,
 
-		length = (function() {
+		length = (function () {
 			var
 				sec = 1000,
 				min = sec * 60,
@@ -105,7 +113,7 @@
 		}());
 
 	// populate day-related structures
-	daysOfWeek.forEach(function(day, index) {
+	daysOfWeek.forEach(function (day, index) {
 		dayDict[day] = index;
 		var abbr = day.substr(0, 2);
 		days.push(abbr);
@@ -116,14 +124,14 @@
 	});
 
 	// populate month-related structures
-	months.forEach(function(month, index) {
+	months.forEach(function (month, index) {
 		monthDict[month] = index;
 		var abbr = month.substr(0, 3);
 		monthAbbr.push(abbr);
 		monthDict[abbr] = index;
 	});
 
-	function isLeapYear(dateOrYear) {
+	function isLeapYear (dateOrYear) {
 		var year = dateOrYear instanceof Date ? dateOrYear.getFullYear() : dateOrYear;
 		return !(year % 400) || (!(year % 4) && !!(year % 100));
 	}
@@ -137,103 +145,128 @@
 		return false;
 	}
 
-	function isDate(value) {
-		var parts, day, month, year, hours, minutes, seconds, ms;
-		switch (typeof value) {
-			case 'object':
-				return isValidObject(value);
-			case 'string':
-				// is it a date in US format?
-				parts = dateRegExp.exec(value);
-				if (parts && parts[2] === parts[4]) {
-					month = +parts[1];
-					day = +parts[3];
-					year = +parts[5];
-					// rough check of a year
-					if (0 < year && year < 2100 && 1 <= month && month <= 12 && 1 <= day &&
-						day <= (month === 2 && isLeapYear(year) ? 29 : monthLengths[month - 1])) {
-						return true;
-					}
-				}
-				// is it a timestamp in a standard format?
-				parts = tsRegExp.exec(value);
-				if (parts) {
-					year = +parts[1];
-					month = +parts[2];
-					day = +parts[3];
-					hours = +parts[4];
-					minutes = +parts[5];
-					seconds = +parts[6];
-					if (0 < year && year < 2100 && 1 <= month && month <= 12 && 1 <= day &&
-						day <= (month === 2 && isLeapYear(year) ? 29 : monthLengths[month - 1]) &&
-						hours < 24 && minutes < 60 && seconds < 60) {
-						return true;
-					}
-				}
-			// intentional fall-down
+	function isDate (value) {
+		if (typeof value === 'object') {
+			return isValidObject(value);
 		}
+		var parts, day, month, year, hours, minutes, seconds, ms;
+
+		if (timeRegExp.test(value)) {
+			// does it have a valid time format?
+			parts = timeRegExp.exec(value);
+			var hr = parseInt(parts[1]);
+			var mn = parseInt(parts[2]);
+			var sc = 0;
+			if (isNaN(hr) || isNaN(mn)) {
+				return false;
+			}
+			if (/[ap]m/i.test(value)) {
+				// uses am/pm
+				if (hr > 12) {
+					return false;
+				}
+
+			} else {
+				// 24 hour clock
+				sc = parseInt(parts[3]);
+			}
+			// assumes 24 hour clock here
+			if (sc < 0 || sc > 59 || mn < 0 || mn > 59 || hr < 0 || hr > 23) {
+				return false;
+			}
+			// continue with date...
+		}
+
+		// is it a date in US format?
+		parts = dateRegExp.exec(value);
+		if (parts && parts[2] === parts[4]) {
+			month = +parts[1];
+			day = +parts[3];
+			year = +parts[5];
+			// rough check of a year
+			if (0 < year && year < 2100 && 1 <= month && month <= 12 && 1 <= day &&
+				day <= (month === 2 && isLeapYear(year) ? 29 : monthLengths[month - 1])) {
+				return true;
+			}
+		}
+		// is it a timestamp in a standard format?
+		parts = tsRegExp.exec(value);
+		if (parts) {
+			year = +parts[1];
+			month = +parts[2];
+			day = +parts[3];
+			hours = +parts[4];
+			minutes = +parts[5];
+			seconds = +parts[6];
+			if (0 < year && year < 2100 && 1 <= month && month <= 12 && 1 <= day &&
+				day <= (month === 2 && isLeapYear(year) ? 29 : monthLengths[month - 1]) &&
+				hours < 24 && minutes < 60 && seconds < 60) {
+				return true;
+			}
+		}
+
 		return false;
 	}
 
-	function pad(num) {
+	function pad (num) {
 		return (num < 10 ? '0' : '') + num;
 	}
 
-	function getMonth(dateOrIndex) {
+	function getMonth (dateOrIndex) {
 		return typeof dateOrIndex === 'number' ? dateOrIndex : dateOrIndex.getMonth();
 	}
 
-	function getMonthIndex(name) {
+	function getMonthIndex (name) {
 		// TODO: do we really want a 0-based index? or should it be a 1-based one?
 		var index = monthDict[name];
 		return typeof index === 'number' ? index : void 0;
 	}
 
-	function getMonthName(date) {
+	function getMonthName (date) {
 		return months[getMonth(date)];
 	}
 
-	function getFirstSunday(date) {
+	function getFirstSunday (date) {
 		// returns a negative index related to the 1st of the month
 		var d = new Date(date.getTime());
 		d.setDate(1);
 		return -d.getDay();
 	}
 
-	function getDaysInPrevMonth(date) {
+	function getDaysInPrevMonth (date) {
 		var d = new Date(date);
 		d.setMonth(d.getMonth() - 1);
 		return getDaysInMonth(d);
 	}
 
-	function getDaysInMonth(date) {
+	function getDaysInMonth (date) {
 		var month = date.getMonth();
 		return month === 1 && isLeapYear(date) ? 29 : monthLengths[month];
 	}
 
-	function toDate(str) {
-		if (typeof str !== 'string') {
-			return str;
+	function toDate (value) {
+		if (typeof value !== 'string') {
+			return value;
 		}
-		if (isTimestamp(str)) {
+		if (isTimestamp(value)) {
 			// 2000-02-29T00:00:00
-			return fromTimestamp(str);
+			return fromTimestamp(value);
 		}
 		// 11/20/2000
-		var parts = dateRegExp.exec(str);
+		var parts = dateRegExp.exec(value);
 		if (parts && parts[2] === parts[4]) {
 			var date = new Date(+parts[5], +parts[1] - 1, +parts[3]);
-			if (timeRegExp.test(str)) {
-				parts = timeRegExp.exec(str);
+			if (timeRegExp.test(value)) {
+				parts = timeRegExp.exec(value);
 				var hr = parseInt(parts[1]);
 				var mn = parseInt(parts[2]);
 				var sc = 0;
 				if (isNaN(hr) || isNaN(mn)) {
 					return date;
 				}
-				if (/m/i.test(parts[3])) {
+				if (/[ap]m/i.test(value)) {
 					// uses am/pm
-					if (/p/i.test(parts[3]) && hr !== 12) {
+					if (/pm/i.test(value) && hr !== 12) {
 						hr += 12;
 					}
 
@@ -248,23 +281,24 @@
 			return date;
 		}
 
-
 		return new Date(-1); // invalid date
 	}
 
-	function formatDatePattern(date, pattern) {
+	function formatDatePattern (date, pattern) {
 		// 'M d, yyyy' Dec 5, 2015
 		// 'MM dd yy' December 05 15
 		// 'm-d-yy' 1-1-15
 		// 'mm-dd-yyyy' 01-01-2015
 		// 'm/d/yy' 12/25/15
+		// time:
+		// 'yyyy/MM/dd h:m A' 2016/01/26 04:23 AM
 
-		return pattern.replace(datePattern, function(name) {
+		return pattern.replace(datePattern, function (name) {
 			return datePatternLibrary[name](date);
 		});
 	}
 
-	function format(date, delimiterOrPattern) {
+	function format (date, delimiterOrPattern) {
 		if (delimiterOrPattern && delimiterOrPattern.length > 1) {
 			return formatDatePattern(date, delimiterOrPattern);
 		}
@@ -277,43 +311,7 @@
 		return [pad(m), pad(d), y].join(del);
 	}
 
-	function formatTime(date, usePeriod) {
-		if (typeof date === 'string') {
-			date = toDate(date);
-		}
-
-		var
-			period = 'AM',
-			hours = date.getHours(),
-			minutes = date.getMinutes(),
-			retval,
-			seconds = date.getSeconds();
-
-		if (hours > 11) {
-			hours -= 12;
-			period = 'PM';
-		}
-		if (hours === 0) {
-			hours = 12;
-		}
-
-		retval = hours + ':' + pad(minutes) + ':' + pad(seconds);
-
-		if (usePeriod) {
-			retval = retval + ' ' + period;
-		}
-
-		return retval;
-	}
-
-	function period(date) {
-		if (typeof date === 'string') {
-			date = toDate(date);
-		}
-		return date.getHours() > 11 ? 'PM' : 'AM';
-	}
-
-	function toISO(date, includeTZ) {
+	function toISO (date, includeTZ) {
 		var
 			str,
 			now = new Date(),
@@ -327,7 +325,7 @@
 		return str;
 	}
 
-	function natural(date) {
+	function natural (date) {
 		if (typeof date === 'string') {
 			date = this.from(date);
 		}
@@ -355,17 +353,17 @@
 		return subtract(date, -amount, dateType);
 	}
 
-	function subtract(date, amount, dateType) {
+	function subtract (date, amount, dateType) {
 		// subtract N days from date
 		var
 			time = date.getTime(),
 			tmp = new Date(time);
 
-		if(dateType === 'month'){
+		if (dateType === 'month') {
 			tmp.setMonth(tmp.getMonth() - amount);
 			return tmp;
 		}
-		if(dateType === 'year'){
+		if (dateType === 'year') {
 			tmp.setFullYear(tmp.getFullYear() - amount);
 			return tmp;
 		}
@@ -373,7 +371,7 @@
 		return new Date(time - length.day * amount);
 	}
 
-	function subtractDate(date1, date2, dateType) {
+	function subtractDate (date1, date2, dateType) {
 		// dateType: week, day, hr, min, sec
 		// past dates have a positive value
 		// future dates have a negative value
@@ -394,20 +392,20 @@
 	}
 
 	function isLess (d1, d2) {
-		if(isValidObject(d1) && isValidObject(d2)){
+		if (isValidObject(d1) && isValidObject(d2)) {
 			return d1.getTime() < d2.getTime();
 		}
 		return false;
 	}
 
 	function isGreater (d1, d2) {
-		if(isValidObject(d1) && isValidObject(d2)){
+		if (isValidObject(d1) && isValidObject(d2)) {
 			return d1.getTime() > d2.getTime();
 		}
 		return false;
 	}
 
-	function diff(date1, date2) {
+	function diff (date1, date2) {
 		// return the difference between 2 dates in days
 		var utc1 = Date.UTC(date1.getFullYear(), date1.getMonth(), date1.getDate()),
 			utc2 = Date.UTC(date2.getFullYear(), date2.getMonth(), date2.getDate());
@@ -416,13 +414,13 @@
 	}
 
 	function copy (date) {
-		if(isValidObject(date)){
+		if (isValidObject(date)) {
 			return new Date(date.getTime());
 		}
 		return date;
 	}
 
-	function getNaturalDay(date, compareDate, noDaysOfWeek) {
+	function getNaturalDay (date, compareDate, noDaysOfWeek) {
 
 		var
 			today = compareDate || new Date(),
@@ -475,7 +473,6 @@
 	dates = {
 		// convertors
 		format: format,
-		formatTime: formatTime,
 		toDate: toDate,
 		isValid: isDate,
 		isDate: isDate,
@@ -499,7 +496,6 @@
 		getDaysInMonth: getDaysInMonth,
 		getDaysInPrevMonth: getDaysInPrevMonth,
 		// helpers
-		period: period,
 		natural: natural,
 		getNaturalDay: getNaturalDay,
 		// utils
@@ -518,37 +514,6 @@
 			abbr: days,
 			abbr3: days3,
 			dict: dayDict
-		},
-		// deprecated
-		dateToStr: function (date) {
-			console.warn('deprecated - Use format instead');
-			return format(date);
-		},
-		formatDate: function (date) {
-			console.warn('deprecated - Use format instead');
-			return format(date);
-		},
-		strToDate: function (str) {
-			console.warn('deprecated - Use toDate instead');
-			return toDate(str)
-		},
-		isDateType: function (item) {
-			console.warn('deprecated - Use isDate instead');
-			return isDate(item);
-		},
-		timestamp: {
-			to: function(date) {
-				console.warn('deprecated - Use toTimestamp instead');
-				return toTimestamp(date);
-			},
-			from: function(str) {
-				console.warn('deprecated - Use fromTimestamp instead');
-				return fromTimestamp(str);
-			},
-			is: function(str) {
-				console.warn('deprecated - Use isTimestamp instead');
-				return isTimestamp(str);
-			}
 		}
 	};
 
