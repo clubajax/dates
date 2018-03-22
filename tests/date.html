@@ -50,8 +50,10 @@
 				expect(dates.format(ts, 'yyyy/MM/dd h:m A')).to.equal('2016/01/26 04:23 AM');
 				expect(dates.format(date, 'yyyy/MM/dd h:m A')).to.equal('2015/01/01 12:00 AM');
 				expect(dates.format(ts, 'h:m A')).to.equal('04:23 AM');
-				expect(dates.format(ts, 'H:m a')).to.equal('16:23 am');
-
+				expect(dates.format(ts, 'H:m a')).to.equal('16:23 am'); // invalid! - 24 hr clock with am
+				expect(dates.format(ts, 'H:m:s a')).to.equal('16:23:32 am'); // invalid!
+				expect(dates.format(ts, 'yyyy/MM/dd, E')).to.equal('2016/01/26, Tuesday');
+				expect(dates.format(ts, 'yyyy/MM/dd, e')).to.equal('2016/01/26, Tue');
 			});
 
             test('it should check valid dates', function () {

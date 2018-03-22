@@ -34,7 +34,7 @@
 
 		// https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html
 		//
-		datePattern = /yyyy|yy|MMMM|MMM|MM|M|dd|d|H|h|m|s|A|a/g,
+		datePattern = /yyyy|yy|MMMM|MMM|MM|M|dd|d|E|e|H|h|m|s|A|a/g,
 		datePatternLibrary = {
 			yyyy: function (date) {
 				return date.getFullYear();
@@ -60,6 +60,12 @@
 			},
 			d: function (date) {
 				return date.getDate();
+			},
+			E: function (date) {
+				return daysOfWeek[date.getDay()];
+			},
+			e: function (date) {
+				return days3[date.getDay()];
 			},
 			H: function (date) {
 				return pad(date.getHours());
@@ -464,7 +470,7 @@
 	}
 
 	return {
-		// convertors
+		// converters
 		format: format,
 		toDate: toDate,
 		isValid: isDate,
