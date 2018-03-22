@@ -14,9 +14,7 @@
 	}
 }(this, function () {
 
-	'use strict';
-
-	var
+	const
 		// tests that it is a date string, not a valid date. 88/88/8888 would be true
 		dateRegExp = /^(\d{1,2})([\/-])(\d{1,2})([\/-])(\d{4})\b/,
 		// 2015-05-26T00:00:00
@@ -94,10 +92,8 @@
 			}
 		},
 
-		dates,
-
 		length = (function () {
-			var
+			const
 				sec = 1000,
 				min = sec * 60,
 				hr = min * 60,
@@ -115,7 +111,7 @@
 	// populate day-related structures
 	daysOfWeek.forEach(function (day, index) {
 		dayDict[day] = index;
-		var abbr = day.substr(0, 2);
+		let abbr = day.substr(0, 2);
 		days.push(abbr);
 		dayDict[abbr] = index;
 		abbr = day.substr(0, 3);
@@ -126,18 +122,18 @@
 	// populate month-related structures
 	months.forEach(function (month, index) {
 		monthDict[month] = index;
-		var abbr = month.substr(0, 3);
+		const abbr = month.substr(0, 3);
 		monthAbbr.push(abbr);
 		monthDict[abbr] = index;
 	});
 
 	function isLeapYear (dateOrYear) {
-		var year = dateOrYear instanceof Date ? dateOrYear.getFullYear() : dateOrYear;
+		const year = dateOrYear instanceof Date ? dateOrYear.getFullYear() : dateOrYear;
 		return !(year % 400) || (!(year % 4) && !!(year % 100));
 	}
 
 	function isValidObject (date) {
-		var ms;
+		let ms;
 		if (typeof date === 'object' && date instanceof Date) {
 			ms = date.getTime();
 			return !isNaN(ms) && ms > 0;
@@ -149,14 +145,14 @@
 		if (typeof value === 'object') {
 			return isValidObject(value);
 		}
-		var parts, day, month, year, hours, minutes, seconds, ms;
+		let parts, day, month, year, hours, minutes, seconds, ms;
 
 		if (timeRegExp.test(value)) {
 			// does it have a valid time format?
 			parts = timeRegExp.exec(value);
-			var hr = parseInt(parts[1]);
-			var mn = parseInt(parts[2]);
-			var sc = 0;
+			let hr = parseInt(parts[1]);
+			let mn = parseInt(parts[2]);
+			let sc = 0;
 			if (isNaN(hr) || isNaN(mn)) {
 				return false;
 			}
@@ -217,8 +213,7 @@
 	}
 
 	function getMonthIndex (name) {
-		// TODO: do we really want a 0-based index? or should it be a 1-based one?
-		var index = monthDict[name];
+		const index = monthDict[name];
 		return typeof index === 'number' ? index : void 0;
 	}
 
@@ -228,19 +223,19 @@
 
 	function getFirstSunday (date) {
 		// returns a negative index related to the 1st of the month
-		var d = new Date(date.getTime());
+		const d = new Date(date.getTime());
 		d.setDate(1);
 		return -d.getDay();
 	}
 
 	function getDaysInPrevMonth (date) {
-		var d = new Date(date);
+		const d = new Date(date);
 		d.setMonth(d.getMonth() - 1);
 		return getDaysInMonth(d);
 	}
 
 	function getDaysInMonth (date) {
-		var month = date.getMonth();
+		const month = date.getMonth();
 		return month === 1 && isLeapYear(date) ? 29 : monthLengths[month];
 	}
 
@@ -253,14 +248,14 @@
 			return fromTimestamp(value);
 		}
 		// 11/20/2000
-		var parts = dateRegExp.exec(value);
+		let parts = dateRegExp.exec(value);
 		if (parts && parts[2] === parts[4]) {
-			var date = new Date(+parts[5], +parts[1] - 1, +parts[3]);
+			const date = new Date(+parts[5], +parts[1] - 1, +parts[3]);
 			if (timeRegExp.test(value)) {
 				parts = timeRegExp.exec(value);
-				var hr = parseInt(parts[1]);
-				var mn = parseInt(parts[2]);
-				var sc = 0;
+				let hr = parseInt(parts[1]);
+				let mn = parseInt(parts[2]);
+				let sc = 0;
 				if (isNaN(hr) || isNaN(mn)) {
 					return date;
 				}
@@ -302,7 +297,7 @@
 		if (delimiterOrPattern && delimiterOrPattern.length > 1) {
 			return formatDatePattern(date, delimiterOrPattern);
 		}
-		var
+		const
 			del = delimiterOrPattern || '/',
 			y = date.getFullYear(),
 			m = date.getMonth() + 1,
@@ -312,12 +307,11 @@
 	}
 
 	function toISO (date, includeTZ) {
-		var
-			str,
+		const
 			now = new Date(),
 			then = new Date(date.getTime());
 		then.setHours(now.getHours());
-		str = then.toISOString();
+		let str = then.toISOString();
 		if (!includeTZ) {
 			str = str.split('.')[0];
 			str += '.00Z';
@@ -330,7 +324,7 @@
 			date = this.from(date);
 		}
 
-		var
+		let
 			year = date.getFullYear().toString().substr(2),
 			month = date.getMonth() + 1,
 			day = date.getDate(),
@@ -355,7 +349,7 @@
 
 	function subtract (date, amount, dateType) {
 		// subtract N days from date
-		var
+		const
 			time = date.getTime(),
 			tmp = new Date(time);
 
@@ -376,7 +370,8 @@
 		// past dates have a positive value
 		// future dates have a negative value
 
-		var divideBy = {
+		const
+			divideBy = {
 				week: length.week,
 				day: length.day,
 				hr: length.hr,
@@ -407,7 +402,8 @@
 
 	function diff (date1, date2) {
 		// return the difference between 2 dates in days
-		var utc1 = Date.UTC(date1.getFullYear(), date1.getMonth(), date1.getDate()),
+		const
+			utc1 = Date.UTC(date1.getFullYear(), date1.getMonth(), date1.getDate()),
 			utc2 = Date.UTC(date2.getFullYear(), date2.getMonth(), date2.getDate());
 
 		return Math.abs(Math.floor((utc2 - utc1) / length.day));
@@ -422,7 +418,7 @@
 
 	function getNaturalDay (date, compareDate, noDaysOfWeek) {
 
-		var
+		const
 			today = compareDate || new Date(),
 			daysAgo = subtractDate(date, today, 'day');
 
@@ -455,14 +451,11 @@
 		// strip timezone // 2015-05-26T00:00:00Z
 		str = str.split('Z')[0];
 
-		// ["2000-02-30T00:00:00", "2000", "02", "30", "00", "00", "00", index: 0, input: "2000-02-30T00:00:00"]
-		var parts = tsRegExp.exec(str);
-		// TODO: do we need a validation?
+		const parts = tsRegExp.exec(str);
 		if (parts) {
 			// new Date(1995, 11, 17, 3, 24, 0);
 			return new Date(+parts[1], +parts[2] - 1, +parts[3], +parts[4], +parts[5], +parts[6]);
 		}
-		// TODO: what do we return for an invalid date? null?
 		return new Date(-1);
 	}
 
@@ -470,7 +463,7 @@
 		return typeof str === 'string' && tsRegExp.test(str);
 	}
 
-	dates = {
+	return {
 		// convertors
 		format: format,
 		toDate: toDate,
@@ -516,7 +509,4 @@
 			dict: dayDict
 		}
 	};
-
-	return dates;
-
 }));
