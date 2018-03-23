@@ -1,6 +1,6 @@
 {
   "name": "@clubajax/dates",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "author": "Mike Wilcox @clubajax",
   "main": "src/dates.js",
   "description": "A simple utility library for handling dates.",

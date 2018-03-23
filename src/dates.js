@@ -90,11 +90,7 @@
 				return this.a(date).toUpperCase();
 			},
 			a: function (date) {
-				var hr = date.getHours();
-				if (hr > 12) {
-					hr -= 12;
-				}
-				return hr >= 12 ? 'pm' : 'am';
+				return date.getHours() >= 12 ? 'pm' : 'am';
 			}
 		},
 
