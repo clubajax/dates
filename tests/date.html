@@ -25,19 +25,41 @@
         }
 
         suite('dates', function() {
-            var
+            const
                 expect = chai.expect,
                 dates = window.dates;
 
             test('it should get the time from a timestamp', function () {
-				var date = dates.fromTimestamp('2016-01-26T16:23:32.467');
+				const date = dates.fromTimestamp('2016-01-26T16:23:32.467');
 				expect(date.getHours()).to.equal(16);
 				expect(date.getMinutes()).to.equal(23);
 				expect(date.getSeconds()).to.equal(32);
 			});
 
+            test('it should convert UTC timestamps', function () {
+				// central daylight time
+				const date = new Date(2000, 11, 25, 12);
+				const local = date;
+				const utc = dates.toUTC(date);
+				const uts = dates.toUtcTimestamp(local);
+				expect(local.getHours() - utc.getHours()).to.equal(6);
+				expect(dates.toTimestamp(local)).to.equal('2000-12-25T12:00:00');
+				expect(dates.toUtcTimestamp(local)).to.equal('2000-12-25T06:00:00');
+				expect(dates.is(local).equal(dates.fromUtcTimestamp(uts))).to.equal(true);
+
+				// central standard time
+				const d1 = new Date(2018, 3, 26, 12);
+				const u1 = dates.toUTC(d1);
+				const uts1 = dates.toUtcTimestamp(d1);
+
+				expect(d1.getHours() - u1.getHours()).to.equal(5);
+				expect(dates.toTimestamp(d1)).to.equal('2018-04-26T12:00:00');
+				expect(dates.toUtcTimestamp(d1)).to.equal('2018-04-26T07:00:00');
+				expect(dates.is(d1).equal(dates.fromUtcTimestamp(uts1))).to.equal(true);
+			});
+
 			test('it should format a date based on a pattern', function () {
-				var date = new Date(2015, 0, 1),
+				const date = new Date(2015, 0, 1),
 					ts = dates.fromTimestamp('2016-01-26T16:23:32.467');
 
 				expect(dates.format(date, 'MM dd yyyy')).to.equal('01 01 2015');
@@ -47,13 +69,26 @@
 				expect(dates.format(date, 'MM/dd/yy')).to.equal('01/01/15');
 				expect(dates.format(date, 'yyyy/MM/dd')).to.equal('2015/01/01');
 				expect(dates.format(ts, 'MMM d, yyyy')).to.equal('Jan 26, 2016');
-				expect(dates.format(ts, 'yyyy/MM/dd h:m A')).to.equal('2016/01/26 04:23 AM');
+				expect(dates.format(ts, 'yyyy/MM/dd h:m A')).to.equal('2016/01/26 04:23 PM');
 				expect(dates.format(date, 'yyyy/MM/dd h:m A')).to.equal('2015/01/01 12:00 AM');
-				expect(dates.format(ts, 'h:m A')).to.equal('04:23 AM');
-				expect(dates.format(ts, 'H:m a')).to.equal('16:23 am'); // invalid! - 24 hr clock with am
-				expect(dates.format(ts, 'H:m:s a')).to.equal('16:23:32 am'); // invalid!
+				expect(dates.format(ts, 'h:m A')).to.equal('04:23 PM');
+				expect(dates.format(ts, 'H:m a')).to.equal('16:23 pm'); // invalid! - 24 hr clock with am
+				expect(dates.format(ts, 'H:m:s a')).to.equal('16:23:32 pm'); // invalid!
 				expect(dates.format(ts, 'yyyy/MM/dd, E')).to.equal('2016/01/26, Tuesday');
 				expect(dates.format(ts, 'yyyy/MM/dd, e')).to.equal('2016/01/26, Tue');
+			});
+
+			test('it should warn of a commonly mistaken pattern', function () {
+				const date = new Date(2015, 0, 1);
+				const _warn = console.warn;
+				const warnings = [];
+				console.warn = function () {
+					warnings.push(1);
+				};
+				(dates.format(date, 'm/d/yy'));
+				(dates.format(date, 'd/m/yy'));
+				console.warn = _warn;
+				expect(warnings.length).to.equal(2);
 			});
 
             test('it should check valid dates', function () {
@@ -97,7 +132,7 @@
             });
 
 			test('it should convert date strings, with time', function () {
-				var date = dates.toDate('12/12/2020 02:20 pm');
+				let date = dates.toDate('12/12/2020 02:20 pm');
 				expect(date.getHours()).to.equal(14);
 				expect(date.getMinutes()).to.equal(20);
 
@@ -107,14 +142,13 @@
 				expect(date.getSeconds()).to.equal(30);
 
 				date = dates.toDate('12/12/2020 10:34:56 pm');
-				console.log('dt', date);
 			});
 
             test('it should subtract days', function () {
                 function getTime(y, m, d){
                     return (new Date(y, m, d)).getTime();
                 }
-                var compareDate = new Date(2016, 2, 5);
+                const compareDate = new Date(2016, 2, 5);
                 expect(dates.subtract(compareDate, 1).getTime()).to.equal(getTime(2016, 2, 4));
                 expect(dates.subtract(compareDate, 2).getTime()).to.equal(getTime(2016, 2, 3));
                 expect(dates.subtract(compareDate, 3).getTime()).to.equal(getTime(2016, 2, 2));
@@ -126,7 +160,7 @@
                 function getTime(y, m, d){
                     return (new Date(y, m, d)).getTime();
                 }
-                var compareDate = new Date(2016, 2, 5);
+                const compareDate = new Date(2016, 2, 5);
                 expect(dates.subtract(compareDate, 1, 'month').getTime()).to.equal(getTime(2016, 1, 5));
                 expect(dates.subtract(compareDate, -1, 'month').getTime()).to.equal(getTime(2016, 3, 5));
                 expect(dates.subtract(compareDate, 3, 'month').getTime()).to.equal(getTime(2015, 11, 5));
@@ -136,7 +170,7 @@
                 function getTime(y, m, d){
                     return (new Date(y, m, d)).getTime();
                 }
-                var compareDate = new Date(2016, 2, 5);
+                const compareDate = new Date(2016, 2, 5);
                 expect(dates.subtract(compareDate, 1, 'year').getTime()).to.equal(getTime(2015, 2, 5));
                 expect(dates.subtract(compareDate, 3, 'year').getTime()).to.equal(getTime(2013, 2, 5));
             });
@@ -151,7 +185,7 @@
             });
 
             test('it should return natural dates', function () {
-                var compareDate = new Date(2016, 2, 5); // Saturday
+                const compareDate = new Date(2016, 2, 5); // Saturday
 
                 expect(dates.getNaturalDay(new Date(2016, 2, 5), compareDate)).to.equal('Today');
                 expect(dates.getNaturalDay(new Date(2015, 2, 5), compareDate)).to.equal('03/05/2015');
@@ -169,7 +203,7 @@
             });
 
             test('it should subtract dates', function () {
-                var compareDate = new Date(2016, 2, 5); // Saturday
+                const compareDate = new Date(2016, 2, 5); // Saturday
 
                 expect(dates.subtractDate(new Date(2016, 2, 5), compareDate, 'week')).to.equal(0);
                 expect(dates.subtractDate(new Date(2016, 2, 5), compareDate, 'day')).to.equal(0);
@@ -192,7 +226,7 @@
             });
 
             test('it should add days', function () {
-                var result;
+                let result;
 
                 result = dates.add(new Date(2016, 2, 5), 1);
                 expect(dates.format(result)).to.equal(dates.format(new Date(2016, 2, 6)));
@@ -203,27 +237,27 @@
             });
 
             test('it should add months', function () {
-                var compareDate = new Date(2016, 2, 5);
+                const compareDate = new Date(2016, 2, 5);
                 expect(dates.add(compareDate, 1, 'month').getTime()).to.equal(getTime(2016, 3, 5));
                 expect(dates.add(compareDate, -1, 'month').getTime()).to.equal(getTime(2016, 1, 5));
                 expect(dates.add(compareDate, 11, 'month').getTime()).to.equal(getTime(2017, 1, 5));
             });
 
             test('it should add years', function () {
-                var compareDate = new Date(2016, 2, 5);
+                const compareDate = new Date(2016, 2, 5);
                 expect(dates.add(compareDate, 1, 'year').getTime()).to.equal(getTime(2017, 2, 5));
                 expect(dates.add(compareDate, 3, 'year').getTime()).to.equal(getTime(2019, 2, 5));
             });
 
             test('it should copy', function () {
-                var compareDate = new Date(2016, 2, 5);
+                const compareDate = new Date(2016, 2, 5);
                 expect(dates.copy(compareDate).getTime()).to.equal(getTime(2016, 2, 5));
                 expect(dates.copy(compareDate)).to.not.equal(compareDate);
                 expect(dates.copy('not a date')).to.equal('not a date');
             });
 
             test('it should compare', function () {
-                var
+                const
                     d1 = new Date(2016, 2, 5),
                     d2 = new Date(2017, 2, 5);
                 expect(dates.isLess(d1, d2)).to.equal(true);
@@ -234,6 +268,20 @@
                 expect(dates.isLess('a', 'b')).to.equal(false);
                 expect(dates.isGreater()).to.equal(false);
             });
+
+			test('it should have `is` functionality', function () {
+				const
+					d1 = new Date(2016, 2, 5),
+					d2 = new Date(2017, 2, 5),
+					d1Copy = new Date(2016, 2, 5);
+
+
+				expect(dates.is(d1).less(d2)).to.equal(true);
+				expect(dates.is(d2).greater(d1)).to.equal(true);
+				expect(dates.is(d2).valid()).to.equal(true);
+				expect(dates.is(d2).timestamp()).to.equal(false);
+				expect(dates.is(d1).equal(d1Copy)).to.equal(true);
+			});
 
         });
 

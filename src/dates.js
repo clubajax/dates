@@ -47,11 +47,11 @@
 			},
 			MMM: function (date) {
 				return monthAbbr[date.getMonth()];
-
 			},
 			MM: function (date) {
 				return pad(date.getMonth() + 1);
 			},
+
 			M: function (date) {
 				return date.getMonth() + 1;
 			},
@@ -91,6 +91,17 @@
 			},
 			a: function (date) {
 				return date.getHours() >= 12 ? 'pm' : 'am';
+			},
+
+			// not standard:
+			mmmm: function (date) {
+				return this.MMMM(date);
+			},
+			mmm: function (date) {
+				return this.MMM(date);
+			},
+			mm: function (date) {
+				return this.MM(date);
 			}
 		},
 
@@ -290,6 +301,10 @@
 		// time:
 		// 'yyyy/MM/dd h:m A' 2016/01/26 04:23 AM
 
+		if (/^m\/|\/m\//.test(pattern)) {
+			console.warn('Invalid pattern. Did you mean:', pattern.replace('m', 'M'));
+		}
+
 		return pattern.replace(datePattern, function (name) {
 			return datePatternLibrary[name](date);
 		});
@@ -465,6 +480,43 @@
 		return typeof str === 'string' && tsRegExp.test(str);
 	}
 
+	function toUtcTimestamp (date) {
+		return toTimestamp(toUTC(date));
+	}
+
+	function fromUtcTimestamp (date) {
+		date = toDate(date);
+		const tz = date.getTimezoneOffset() * 60000;
+		const time = date.getTime() + tz;
+		const tzDate = new Date(time);
+		return new Date(tzDate.toUTCString());
+	}
+
+	function toUTC (date) {
+		date = toDate(date);
+		return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds()));
+	}
+
+	function is (d1) {
+		return {
+			less (d2) {
+				return isLess(d1, d2);
+			},
+			greater (d2) {
+				return isGreater(d1, d2);
+			},
+			valid () {
+				return isDate(d1);
+			},
+			timestamp () {
+				return isTimestamp(d1);
+			},
+			equal(d2) {
+				return toDate(d1).getTime() === toDate(d2).getTime();
+			}
+		}
+	}
+
 	return {
 		// converters
 		format: format,
@@ -473,9 +525,12 @@
 		isDate: isDate,
 		isValidObject: isValidObject,
 		toISO: toISO,
+		toUTC: toUTC,
 		toTimestamp: toTimestamp,
 		fromTimestamp: fromTimestamp,
 		isTimestamp: isTimestamp,
+		toUtcTimestamp: toUtcTimestamp,
+		fromUtcTimestamp: fromUtcTimestamp,
 		// math
 		subtract: subtract,
 		add: add,
@@ -494,6 +549,7 @@
 		natural: natural,
 		getNaturalDay: getNaturalDay,
 		// utils
+		is: is,
 		copy: copy,
 		clone: copy,
 		length: length,
