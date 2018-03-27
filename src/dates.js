@@ -17,9 +17,11 @@
 	const
 		// tests that it is a date string, not a valid date. 88/88/8888 would be true
 		dateRegExp = /^(\d{1,2})([\/-])(\d{1,2})([\/-])(\d{4})\b/,
+
 		// 2015-05-26T00:00:00
 		tsRegExp = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})\b/,
 
+		// 12:30 am
 		timeRegExp = /(\d\d):(\d\d)(?:\s|:)(\d\d|[ap]m)(?:\s)*([ap]m)*/i,
 
 		daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
@@ -513,6 +515,12 @@
 			},
 			equal(d2) {
 				return toDate(d1).getTime() === toDate(d2).getTime();
+			},
+			time () {
+				return timeRegExp.test(d1);
+			},
+			date () {
+				return dateRegExp.test(d1);
 			}
 		}
 	}
