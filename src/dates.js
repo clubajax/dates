@@ -533,9 +533,15 @@
 					d1.getSeconds() === d2.getSeconds();
 			},
 			time () {
+				if (typeof d1 !== 'string') {
+					throw new Error('value should be a string');
+				}
 				return timeRegExp.test(d1);
 			},
 			date () {
+				if (typeof d1 !== 'string') {
+					throw new Error('value should be a string');
+				}
 				return dateRegExp.test(d1);
 			}
 		}

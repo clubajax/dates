@@ -65,7 +65,20 @@ repository or submodule.
  - `getDaysInPrevMonth(date)` - For use in building calendars.
  - `getMonthName(date)` - Returns the month name of a date.
  
+ ###is()
  
+ The `is()` functionality has simple chaining to make some statements more clear. For example, with `dates.isGreater(date1, date2)`, it's not obvious in what order the dates should be.
+ - `is(date1).less(date2)` - Returns if first date is less than second date.
+ - `is(date1).greater(date2)` - Returns if first date is greater than second date.=
+ - `is(date1).valid()` - alias to `isValid`.
+ - `is(date1).timestamp()` - alias to `isTimestamp`.
+ - `is(date1).equal(date2)` - Returns is the two dates are equal.
+ - `is(date1).equalTime()` - Returns is the two objects have equal times, ignoring the date.
+ - `is(date1).equalDate()` - Returns is the two objects have equal dates, ignoring the time.
+ - `is(date1).time()` - If passed string is a valid time.
+ - `is(date1).date()` - If passed string is a valid date.
+
+
 ## License
 
 This uses the [MIT license](./LICENSE). Feel free to use, and redistribute at will.
