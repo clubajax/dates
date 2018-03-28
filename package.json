@@ -1,14 +1,11 @@
 {
   "name": "@clubajax/dates",
-  "version": "2.1.1",
+  "version": "2.2.0",
   "author": "Mike Wilcox @clubajax",
   "main": "src/dates.js",
   "description": "A simple utility library for handling dates.",
   "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/clubajax/dates.git"
-  },
+  "repository": "git://github.com/clubajax/dates.git",
   "bugs": {
     "url": "https://github.com/clubajax/dates/issues"
   },
@@ -17,10 +14,16 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+		"start": "grunt dev"
   },
   "keywords": [
     "dates",
     "date"
-  ]
+  ],
+  "devDependencies": {
+    "grunt": "^1.0.2",
+    "grunt-concurrent": "^2.3.1",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-http-server": "^2.1.0"
+  }
 }

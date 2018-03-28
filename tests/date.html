@@ -6,6 +6,7 @@
     <script src="../src/dates.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mocha/2.5.3/mocha.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chai/3.5.0/chai.min.js"></script>
+	<script src="//localhost:35799/livereload.js"></script>
 </head>
 <body>
     <h1>date test</h1>
@@ -126,12 +127,12 @@
 				expect(dates.isValid('12/25/1982 13:20 am')).to.equal(false);
             });
 
-            test('it should convert date strings', function () {
+            test('it should convert date strings toDate', function () {
                 expect(string(dates.toDate('2000-02-28T00:00:00'))).to.equal('02/28/2000');
                 expect(string(dates.toDate('02/28/2000'))).to.equal('02/28/2000');
             });
 
-			test('it should convert date strings, with time', function () {
+			test('it should convert date strings, with time toDate', function () {
 				let date = dates.toDate('12/12/2020 02:20 pm');
 				expect(date.getHours()).to.equal(14);
 				expect(date.getMinutes()).to.equal(20);
@@ -142,6 +143,31 @@
 				expect(date.getSeconds()).to.equal(30);
 
 				date = dates.toDate('12/12/2020 10:34:56 pm');
+			});
+
+			test('it should convert time strings toDate', function () {
+				let date = dates.toDate('02:20 pm');
+				expect(date.getHours()).to.equal(14);
+				expect(date.getMinutes()).to.equal(20);
+
+				date = dates.toDate('12:30:25 am');
+				expect(date.getHours()).to.equal(0);
+				expect(date.getMinutes()).to.equal(30);
+				expect(date.getSeconds()).to.equal(25);
+
+				date = dates.toDate('01:20 pm');
+				expect(date.getHours()).to.equal(13);
+
+				date = dates.toDate('01:20 am');
+				expect(date.getHours()).to.equal(1);
+
+				date = dates.toDate('12:00 am');
+				expect(date.getHours()).to.equal(0);
+
+				date = dates.toDate('12:00 pm');
+				expect(date.getHours()).to.equal(12);
+
+				console.log('date', date);
 			});
 
             test('it should subtract days', function () {
@@ -273,7 +299,11 @@
 				const
 					d1 = new Date(2016, 2, 5),
 					d2 = new Date(2017, 2, 5),
-					d1Copy = new Date(2016, 2, 5);
+					d1Copy = new Date(2016, 2, 5),
+					t1 = new Date(2018, 1, 2, 12, 2, 30),
+					t2 = new Date(2019, 2, 3, 12, 2, 30),
+					da = new Date(2016, 2, 5, 12, 1, 20),
+					db = new Date(2016, 2, 5, 0, 2, 10);
 
 
 				expect(dates.is(d1).less(d2)).to.equal(true);
@@ -281,6 +311,12 @@
 				expect(dates.is(d2).valid()).to.equal(true);
 				expect(dates.is(d2).timestamp()).to.equal(false);
 				expect(dates.is(d1).equal(d1Copy)).to.equal(true);
+
+				expect(dates.is(t1).equalTime(t2)).to.equal(true);
+				expect(dates.is(da).equalDate(db)).to.equal(true);
+
+
+
 			});
 
         });

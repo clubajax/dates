@@ -262,36 +262,42 @@
 			// 2000-02-29T00:00:00
 			return fromTimestamp(value);
 		}
+		let date = new Date(-1);
+
 		// 11/20/2000
 		let parts = dateRegExp.exec(value);
 		if (parts && parts[2] === parts[4]) {
-			const date = new Date(+parts[5], +parts[1] - 1, +parts[3]);
-			if (timeRegExp.test(value)) {
-				parts = timeRegExp.exec(value);
-				let hr = parseInt(parts[1]);
-				let mn = parseInt(parts[2]);
-				let sc = 0;
-				if (isNaN(hr) || isNaN(mn)) {
-					return date;
-				}
-				if (/[ap]m/i.test(value)) {
-					// uses am/pm
-					if (/pm/i.test(value) && hr !== 12) {
-						hr += 12;
-					}
-
-				} else {
-					// 24 hour clock
-					sc = parseInt(parts[3]);
-				}
-				date.setHours(hr);
-				date.setMinutes(mn);
-				date.setSeconds(sc);
-			}
-			return date;
+			date = new Date(+parts[5], +parts[1] - 1, +parts[3]);
 		}
 
-		return new Date(-1); // invalid date
+		if (timeRegExp.test(value)) {
+			parts = timeRegExp.exec(value);
+			let hr = parseInt(parts[1]);
+			let mn = parseInt(parts[2]);
+			let sc = value.split(':').length === 3 ? parseInt(parts[3]) : 0;
+			if (isNaN(hr) || isNaN(mn)) {
+				return date;
+			}
+			if (/[ap]m/i.test(value)) {
+				// uses am/pm
+				if (/pm/i.test(value)) {
+					if (hr !== 12) {
+						hr += 12;
+					}
+				} else if (hr === 12) {
+					hr = 0;
+				}
+
+			} else {
+				// 24 hour clock
+				sc = parseInt(parts[3]);
+			}
+			date.setHours(hr);
+			date.setMinutes(mn);
+			date.setSeconds(sc);
+		}
+
+		return date;
 	}
 
 	function formatDatePattern (date, pattern) {
@@ -515,6 +521,16 @@
 			},
 			equal(d2) {
 				return toDate(d1).getTime() === toDate(d2).getTime();
+			},
+			equalDate (d2) {
+				return d1.getFullYear() === d2.getFullYear() &&
+					d1.getMonth() === d2.getMonth() &&
+					d1.getDate() === d2.getDate();
+			},
+			equalTime (d2) {
+				return d1.getHours() === d2.getHours() &&
+					d1.getMinutes() && d2.getMinutes() &&
+					d1.getSeconds() === d2.getSeconds();
 			},
 			time () {
 				return timeRegExp.test(d1);
