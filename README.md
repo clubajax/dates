@@ -64,6 +64,7 @@ repository or submodule.
  - `getDaysInMonth(date)` - For use in building calendars.
  - `getDaysInPrevMonth(date)` - For use in building calendars.
  - `getMonthName(date)` - Returns the month name of a date.
+ - `zeroTime(date)` - Sets the time to zero, leaving date intact.
  
  ###is()
  

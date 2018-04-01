@@ -465,6 +465,15 @@
 		return !noDaysOfWeek && daysAgo < daysOfWeek.length ? daysOfWeek[date.getDay()] : format(date);
 	}
 
+	function zeroTime (date) {
+		date = copy(date);
+		date.setHours(0);
+		date.setMinutes(0);
+		date.setSeconds(0);
+		date.setMilliseconds(0);
+		return date;
+	}
+
 	function toTimestamp (date) {
 		return date.getFullYear() + '-' + pad(date.getMonth() + 1) + '-' + pad(date.getDate()) + 'T' +
 			pad(date.getHours()) + ':' + pad(date.getMinutes()) + ':' + pad(date.getSeconds());
@@ -580,6 +589,7 @@
 		getNaturalDay: getNaturalDay,
 		// utils
 		is: is,
+		zeroTime: zeroTime,
 		copy: copy,
 		clone: copy,
 		length: length,
