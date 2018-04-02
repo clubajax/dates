@@ -1,14 +1,14 @@
 {
-    "name": "dates",
-    "version": "1.4.0",
-    "authors": [
-        "Mike Wilcox <anm9tr@gmail.com>"
-    ],
-    "description": "A simple utility library for handling dates",
-    "license": "MIT",
-    "ignore": [
-        "node_modules",
-        "bower_components"
-    ],
-    "main": "src/dates.js"
+	"name": "dates",
+	"version": "2.2.2",
+	"authors": [
+		"Mike Wilcox <anm9tr@gmail.com>"
+	],
+	"description": "A simple utility library for handling dates",
+	"license": "MIT",
+	"ignore": [
+		"node_modules",
+		"bower_components"
+	],
+	"main": "src/dates.js"
 }

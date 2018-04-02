@@ -151,7 +151,7 @@
 		let ms;
 		if (typeof date === 'object' && date instanceof Date) {
 			ms = date.getTime();
-			return !isNaN(ms) && ms > 0;
+			return !isNaN(ms);
 		}
 		return false;
 	}
