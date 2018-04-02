@@ -295,7 +295,7 @@
                 expect(dates.isGreater()).to.equal(false);
             });
 
-			test('it should have `is` functionality', function () {
+			test.only('it should have `is` functionality', function () {
 				const
 					d1 = new Date(2016, 2, 5),
 					d2 = new Date(2017, 2, 5),
@@ -315,8 +315,21 @@
 				expect(dates.is(t1).equalTime(t2)).to.equal(true);
 				expect(dates.is(da).equalDate(db)).to.equal(true);
 
+				// strict
+				expect(dates.is('12/12/2017').date()).to.equal(true);
+				expect(dates.is('02:00 pm').time()).to.equal(true);
+				expect(dates.is('12/12/2017 02:00 pm').date()).to.equal(true);
+				expect(dates.is('12/12/2017 02:00 pm').time()).to.equal(true);
 
+				// non-strict
+				expect(dates.is('2:00 pm').time()).to.equal(true);
+				expect(dates.is('1/1/2017').date()).to.equal(true);
 
+				expect(dates.is('12/12/17').date()).to.equal(false);
+				expect(dates.is('12/122017').date()).to.equal(false);
+				expect(dates.is('02:00').time()).to.equal(false);
+				expect(dates.is('23:00').time()).to.equal(false);
+				expect(dates.is('12/12/201702:00 pm').date()).to.equal(false);
 			});
 
         });

@@ -22,7 +22,7 @@
 		tsRegExp = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})\b/,
 
 		// 12:30 am
-		timeRegExp = /(\d\d):(\d\d)(?:\s|:)(\d\d|[ap]m)(?:\s)*([ap]m)*/i,
+		timeRegExp = /(\d+):(\d\d)(?:\s|:)(\d\d|[ap]m)(?:\s)*([ap]m)*/i,
 
 		daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
 		days = [],
