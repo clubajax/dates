@@ -295,7 +295,7 @@
                 expect(dates.isGreater()).to.equal(false);
             });
 
-			test.only('it should have `is` functionality', function () {
+			test('it should have `is` functionality', function () {
 				const
 					d1 = new Date(2016, 2, 5),
 					d2 = new Date(2017, 2, 5),
@@ -330,6 +330,21 @@
 				expect(dates.is('02:00').time()).to.equal(false);
 				expect(dates.is('23:00').time()).to.equal(false);
 				expect(dates.is('12/12/201702:00 pm').date()).to.equal(false);
+			});
+
+			test('it should pad dates and times', function () {
+				expect(dates.padded('1/1/2017')).to.equal('01/01/2017');
+				expect(dates.padded('1/01/2017')).to.equal('01/01/2017');
+				expect(dates.padded('01/1/2017')).to.equal('01/01/2017');
+				expect(dates.padded('01/01/2017')).to.equal('01/01/2017');
+				//
+				//
+				expect(dates.padded('2:00 pm')).to.equal('02:00 pm');
+				expect(dates.padded('2:10:59 pm')).to.equal('02:10:59 pm');
+				expect(dates.padded('02:00 pm')).to.equal('02:00 pm');
+
+				expect(dates.padded('01/1/2017 2:00 pm')).to.equal('01/01/2017 02:00 pm');
+				expect(dates.padded('01/1/2017 2:01:01 pm')).to.equal('01/01/2017 02:01:01 pm');
 			});
 
         });

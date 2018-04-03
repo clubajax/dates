@@ -219,7 +219,31 @@
 		return false;
 	}
 
+	function padded (value) {
+		const time = timeRegExp.exec(value);
+		const date = dateRegExp.exec(value);
+		let str = '';
+		if (date) {
+			str += pad(date[1]) + date[2] + pad(date[3]) + date[4] + date[5];
+		}
+		if (date && time) {
+			str += ' ';
+		}
+		if (time) {
+			if (time[4]) {
+				str += pad(time[1]) + ':' + time[2] + ':' + time[3] + ' ' + time[4];
+			} else {
+				str += pad(time[1]) + ':' + time[2] + ' ' + time[3];
+			}
+
+		}
+		return str;
+	}
+
 	function pad (num) {
+		if (typeof num === 'string') {
+			return num.length === 1 ? '0' + num : num;
+		}
 		return (num < 10 ? '0' : '') + num;
 	}
 
@@ -594,6 +618,7 @@
 		clone: copy,
 		length: length,
 		pad: pad,
+		padded: padded,
 		// lists
 		months: {
 			full: months,
