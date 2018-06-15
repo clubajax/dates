@@ -540,38 +540,38 @@
 
 	function is (d1) {
 		return {
-			less (d2) {
+			less: function (d2) {
 				return isLess(d1, d2);
 			},
-			greater (d2) {
+			greater: function (d2) {
 				return isGreater(d1, d2);
 			},
-			valid () {
+			valid: function () {
 				return isDate(d1);
 			},
-			timestamp () {
+			timestamp: function () {
 				return isTimestamp(d1);
 			},
-			equal(d2) {
+			equal: function (d2) {
 				return toDate(d1).getTime() === toDate(d2).getTime();
 			},
-			equalDate (d2) {
+			equalDate: function (d2) {
 				return d1.getFullYear() === d2.getFullYear() &&
 					d1.getMonth() === d2.getMonth() &&
 					d1.getDate() === d2.getDate();
 			},
-			equalTime (d2) {
+			equalTime: function (d2) {
 				return d1.getHours() === d2.getHours() &&
 					d1.getMinutes() && d2.getMinutes() &&
 					d1.getSeconds() === d2.getSeconds();
 			},
-			time () {
+			time: function () {
 				if (typeof d1 !== 'string') {
 					throw new Error('value should be a string');
 				}
 				return timeRegExp.test(d1);
 			},
-			date () {
+			date: function () {
 				if (typeof d1 !== 'string') {
 					throw new Error('value should be a string');
 				}
