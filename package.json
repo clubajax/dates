@@ -1,6 +1,6 @@
 {
   "name": "@clubajax/dates",
-  "version": "2.2.5",
+  "version": "2.2.6",
   "author": "Mike Wilcox @clubajax",
   "main": "src/dates.js",
   "description": "A simple utility library for handling dates.",
@@ -14,7 +14,7 @@
     "test": "tests"
   },
   "scripts": {
-		"start": "grunt dev"
+    "start": "grunt dev"
   },
   "keywords": [
     "dates",
