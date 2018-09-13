@@ -15,20 +15,19 @@
 
         mocha.setup('tdd');
 
-
-        function string(date, delimiter){
-            delimiter = delimiter || '/';
-            return [dates.pad(date.getMonth()+1), dates.pad(date.getDate()), date.getFullYear()].join(delimiter);
-        }
-
-        function getTime(y, m, d){
-            return (new Date(y, m, d)).getTime();
-        }
-
         suite('dates', function() {
             const
                 expect = chai.expect,
                 dates = window.dates;
+
+			function string(date, delimiter){
+				delimiter = delimiter || '/';
+				return [dates.pad(date.getMonth()+1), dates.pad(date.getDate()), date.getFullYear()].join(delimiter);
+			}
+
+			function getTime(y, m, d){
+				return (new Date(y, m, d)).getTime();
+			}
 
             test('it should get the time from a timestamp', function () {
 				const date = dates.fromTimestamp('2016-01-26T16:23:32.467');
@@ -130,6 +129,7 @@
             test('it should convert date strings toDate', function () {
                 expect(string(dates.toDate('2000-02-28T00:00:00'))).to.equal('02/28/2000');
                 expect(string(dates.toDate('02/28/2000'))).to.equal('02/28/2000');
+				expect(string(dates.toDate('2000/02/28'))).to.equal('02/28/2000');
             });
 
 			test('it should convert date strings, with time toDate', function () {
@@ -166,8 +166,6 @@
 
 				date = dates.toDate('12:00 pm');
 				expect(date.getHours()).to.equal(12);
-
-				console.log('date', date);
 			});
 
             test('it should subtract days', function () {

@@ -16,7 +16,7 @@
 
 	const
 		// tests that it is a date string, not a valid date. 88/88/8888 would be true
-		dateRegExp = /^(\d{1,2})([\/-])(\d{1,2})([\/-])(\d{4})\b/,
+		dateRegExp = /^(\d{1,4})([\/-])(\d{1,2})([\/-])(\d{1,4})\b/,
 
 		// 2015-05-26T00:00:00
 		tsRegExp = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})\b/,
@@ -195,7 +195,7 @@
 			day = +parts[3];
 			year = +parts[5];
 			// rough check of a year
-			if (0 < year && year < 2100 && 1 <= month && month <= 12 && 1 <= day &&
+			if (year > 1900 && year < 2100 && 1 <= month && month <= 12 && 1 <= day &&
 				day <= (month === 2 && isLeapYear(year) ? 29 : monthLengths[month - 1])) {
 				return true;
 			}
@@ -288,9 +288,13 @@
 		}
 		let date = new Date(-1);
 
-		// 11/20/2000
+
 		let parts = dateRegExp.exec(value);
-		if (parts && parts[2] === parts[4]) {
+		if (parts && parts[1].length === 4) {
+			// 2000-02-20
+			date = new Date(+parts[1], +parts[3] - 1, +parts[5]);
+		} else if (parts && parts[2] === parts[4]) {
+			// 11/20/2000
 			date = new Date(+parts[5], +parts[1] - 1, +parts[3]);
 		}
 
@@ -575,7 +579,7 @@
 				if (typeof d1 !== 'string') {
 					throw new Error('value should be a string');
 				}
-				return dateRegExp.test(d1);
+				return isDate(d1);
 			}
 		}
 	}
