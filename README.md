@@ -55,6 +55,8 @@ repository or submodule.
  - `copy(date)` - Returns a copy of a date object.
  - `isLess(date1, date2)` - Returns if first date is less than second date.
  - `isGreater(date1, date2)` - Returns if first date is greater than second date.
+ - `min(date1, date2, ...)` - Returns the lesser of a number of dates. At least 2 arguments or an array.
+ - `max(date1, date2, ...)` - Returns the greater of a number of dates. At least 2 arguments or an array.
  - `diff(date1, date2)` - The difference, in days, between two date objects. Always a positive value.
  - `isValid(date)` - Determines if the date object or date string is a valid date.
  - `isValidObject(value)` - Determines if the value is a valid date object.

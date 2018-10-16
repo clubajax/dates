@@ -453,6 +453,28 @@
 		return false;
 	}
 
+	function max (d1, d2) {
+		const args = Array.isArray(arguments[0]) ? arguments[0] : arguments;
+		let maxDate = new Date(1901, 1, 1);
+		for (let i = 0; i < args.length; i++) {
+			if (isGreater(args[i], maxDate)) {
+				maxDate = args[i];
+			}
+		}
+		return maxDate;
+	}
+
+	function min () {
+		const args = Array.isArray(arguments[0]) ? arguments[0] : arguments;
+		let minDate = new Date(2099, 0, 1);
+		for (let i = 0; i < args.length; i++) {
+			if (isLess(args[i], minDate)) {
+				minDate = args[i];
+			}
+		}
+		return minDate;
+	}
+
 	function diff (date1, date2) {
 		// return the difference between 2 dates in days
 		const
@@ -502,9 +524,17 @@
 		return date;
 	}
 
-	function toTimestamp (date) {
+	function minutesToTime (mins) {
+		const sign = mins > 0 ? '-' : '+';
+		const h = Math.floor(mins / 60);
+		const m = ((mins / 60) - h) * 60;
+		return sign + pad(h) + ':' + pad(m);
+	}
+
+	function toTimestamp (date, offset) {
+		const tz = !offset ? '' : minutesToTime(date.getTimezoneOffset());
 		return date.getFullYear() + '-' + pad(date.getMonth() + 1) + '-' + pad(date.getDate()) + 'T' +
-			pad(date.getHours()) + ':' + pad(date.getMinutes()) + ':' + pad(date.getSeconds());
+			pad(date.getHours()) + ':' + pad(date.getMinutes()) + ':' + pad(date.getSeconds()) + tz;
 	}
 
 	function fromTimestamp (str) {
@@ -605,6 +635,8 @@
 		subtractDate: subtractDate,
 		isLess: isLess,
 		isGreater: isGreater,
+		min: min,
+		max: max,
 		// special types
 		isLeapYear: isLeapYear,
 		getMonthIndex: getMonthIndex,

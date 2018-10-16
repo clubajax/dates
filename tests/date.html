@@ -280,10 +280,12 @@
                 expect(dates.copy('not a date')).to.equal('not a date');
             });
 
-            test('it should compare', function () {
+            test.only('it should compare', function () {
                 const
                     d1 = new Date(2016, 2, 5),
-                    d2 = new Date(2017, 2, 5);
+                    d2 = new Date(2017, 2, 5),
+					d3 = new Date(2018, 2, 5),
+					d4 = new Date(2016, 2, 4);
                 expect(dates.isLess(d1, d2)).to.equal(true);
                 expect(dates.isGreater(d2, d1)).to.equal(true);
                 expect(dates.isLess(d2, d1)).to.equal(false);
@@ -291,6 +293,15 @@
                 // should gracefully be false
                 expect(dates.isLess('a', 'b')).to.equal(false);
                 expect(dates.isGreater()).to.equal(false);
+
+				console.log('min', dates.min(d1, d2));
+				console.log('max', dates.max(d1, d2));
+
+				expect(dates.max(d1, d2)).to.equal(d2);
+				expect(dates.min(d1, d2)).to.equal(d1);
+
+				expect(dates.max(d1, d2, d3, d4)).to.equal(d3);
+				expect(dates.min(d1, d2, d3, d4)).to.equal(d4);
             });
 
 			test('it should have `is` functionality', function () {
