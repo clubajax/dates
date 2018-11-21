@@ -72,7 +72,7 @@
 			H: function (date) {
 				return pad(date.getHours());
 			},
-			h: function (date) {
+			hh: function (date) {
 				var hr = date.getHours();
 				if (hr > 12) {
 					hr -= 12;
@@ -81,6 +81,16 @@
 					hr = 12;
 				}
 				return pad(hr);
+			},
+			h: function (date) {
+				var hr = date.getHours();
+				if (hr > 12) {
+					hr -= 12;
+				}
+				if (hr === 0) {
+					hr = 12;
+				}
+				return hr;
 			},
 			m: function (date) {
 				return pad(date.getMinutes());
@@ -142,12 +152,12 @@
 		monthDict[abbr] = index;
 	});
 
-	function isLeapYear (dateOrYear) {
+	function isLeapYear(dateOrYear) {
 		const year = dateOrYear instanceof Date ? dateOrYear.getFullYear() : dateOrYear;
 		return !(year % 400) || (!(year % 4) && !!(year % 100));
 	}
 
-	function isValidObject (date) {
+	function isValidObject(date) {
 		let ms;
 		if (typeof date === 'object' && date instanceof Date) {
 			ms = date.getTime();
@@ -156,7 +166,7 @@
 		return false;
 	}
 
-	function isDate (value) {
+	function isDate(value) {
 		if (typeof value === 'object') {
 			return isValidObject(value);
 		}
@@ -219,7 +229,7 @@
 		return false;
 	}
 
-	function padded (value) {
+	function padded(value) {
 		const time = timeRegExp.exec(value);
 		const date = dateRegExp.exec(value);
 		let str = '';
@@ -240,45 +250,45 @@
 		return str;
 	}
 
-	function pad (num) {
+	function pad(num) {
 		if (typeof num === 'string') {
 			return num.length === 1 ? '0' + num : num;
 		}
 		return (num < 10 ? '0' : '') + num;
 	}
 
-	function getMonth (dateOrIndex) {
+	function getMonth(dateOrIndex) {
 		return typeof dateOrIndex === 'number' ? dateOrIndex : dateOrIndex.getMonth();
 	}
 
-	function getMonthIndex (name) {
+	function getMonthIndex(name) {
 		const index = monthDict[name];
 		return typeof index === 'number' ? index : void 0;
 	}
 
-	function getMonthName (date) {
+	function getMonthName(date) {
 		return months[getMonth(date)];
 	}
 
-	function getFirstSunday (date) {
+	function getFirstSunday(date) {
 		// returns a negative index related to the 1st of the month
 		const d = new Date(date.getTime());
 		d.setDate(1);
 		return -d.getDay();
 	}
 
-	function getDaysInPrevMonth (date) {
+	function getDaysInPrevMonth(date) {
 		const d = new Date(date);
 		d.setMonth(d.getMonth() - 1);
 		return getDaysInMonth(d);
 	}
 
-	function getDaysInMonth (date) {
+	function getDaysInMonth(date) {
 		const month = date.getMonth();
 		return month === 1 && isLeapYear(date) ? 29 : monthLengths[month];
 	}
 
-	function toDate (value) {
+	function toDate(value) {
 		if (typeof value !== 'string') {
 			return value;
 		}
@@ -328,7 +338,7 @@
 		return date;
 	}
 
-	function formatDatePattern (date, pattern) {
+	function formatDatePattern(date, pattern) {
 		// 'M d, yyyy' Dec 5, 2015
 		// 'MM dd yy' December 05 15
 		// 'm-d-yy' 1-1-15
@@ -346,7 +356,7 @@
 		});
 	}
 
-	function format (date, delimiterOrPattern) {
+	function format(date, delimiterOrPattern) {
 		if (delimiterOrPattern && delimiterOrPattern.length > 1) {
 			return formatDatePattern(date, delimiterOrPattern);
 		}
@@ -359,7 +369,7 @@
 		return [pad(m), pad(d), y].join(del);
 	}
 
-	function toISO (date, includeTZ) {
+	function toISO(date, includeTZ) {
 		const
 			now = new Date(),
 			then = new Date(date.getTime());
@@ -372,7 +382,7 @@
 		return str;
 	}
 
-	function natural (date) {
+	function natural(date) {
 		if (typeof date === 'string') {
 			date = this.from(date);
 		}
@@ -396,11 +406,11 @@
 		return hours + ':' + pad(minutes) + ' ' + period + ' on ' + pad(month) + '/' + pad(day) + '/' + year;
 	}
 
-	function add (date, amount, dateType) {
+	function add(date, amount, dateType) {
 		return subtract(date, -amount, dateType);
 	}
 
-	function subtract (date, amount, dateType) {
+	function subtract(date, amount, dateType) {
 		// subtract N days from date
 		const
 			time = date.getTime(),
@@ -418,7 +428,7 @@
 		return new Date(time - length.day * amount);
 	}
 
-	function subtractDate (date1, date2, dateType) {
+	function subtractDate(date1, date2, dateType) {
 		// dateType: week, day, hr, min, sec
 		// past dates have a positive value
 		// future dates have a negative value
@@ -439,21 +449,21 @@
 		return Math.floor((utc2 - utc1) / divideBy[dateType]);
 	}
 
-	function isLess (d1, d2) {
+	function isLess(d1, d2) {
 		if (isValidObject(d1) && isValidObject(d2)) {
 			return d1.getTime() < d2.getTime();
 		}
 		return false;
 	}
 
-	function isGreater (d1, d2) {
+	function isGreater(d1, d2) {
 		if (isValidObject(d1) && isValidObject(d2)) {
 			return d1.getTime() > d2.getTime();
 		}
 		return false;
 	}
 
-	function max (d1, d2) {
+	function max(d1, d2) {
 		const args = Array.isArray(arguments[0]) ? arguments[0] : arguments;
 		let maxDate = new Date(1901, 1, 1);
 		for (let i = 0; i < args.length; i++) {
@@ -464,7 +474,7 @@
 		return maxDate;
 	}
 
-	function min () {
+	function min() {
 		const args = Array.isArray(arguments[0]) ? arguments[0] : arguments;
 		let minDate = new Date(2099, 0, 1);
 		for (let i = 0; i < args.length; i++) {
@@ -475,7 +485,7 @@
 		return minDate;
 	}
 
-	function diff (date1, date2) {
+	function diff(date1, date2) {
 		// return the difference between 2 dates in days
 		const
 			utc1 = Date.UTC(date1.getFullYear(), date1.getMonth(), date1.getDate()),
@@ -484,14 +494,14 @@
 		return Math.abs(Math.floor((utc2 - utc1) / length.day));
 	}
 
-	function copy (date) {
+	function copy(date) {
 		if (isValidObject(date)) {
 			return new Date(date.getTime());
 		}
 		return date;
 	}
 
-	function getNaturalDay (date, compareDate, noDaysOfWeek) {
+	function getNaturalDay(date, compareDate, noDaysOfWeek) {
 
 		const
 			today = compareDate || new Date(),
@@ -515,7 +525,7 @@
 		return !noDaysOfWeek && daysAgo < daysOfWeek.length ? daysOfWeek[date.getDay()] : format(date);
 	}
 
-	function zeroTime (date) {
+	function zeroTime(date) {
 		date = copy(date);
 		date.setHours(0);
 		date.setMinutes(0);
@@ -524,20 +534,20 @@
 		return date;
 	}
 
-	function minutesToTime (mins) {
+	function minutesToTime(mins) {
 		const sign = mins > 0 ? '-' : '+';
 		const h = Math.floor(mins / 60);
 		const m = ((mins / 60) - h) * 60;
 		return sign + pad(h) + ':' + pad(m);
 	}
 
-	function toTimestamp (date, offset) {
+	function toTimestamp(date, offset) {
 		const tz = !offset ? '' : minutesToTime(date.getTimezoneOffset());
 		return date.getFullYear() + '-' + pad(date.getMonth() + 1) + '-' + pad(date.getDate()) + 'T' +
 			pad(date.getHours()) + ':' + pad(date.getMinutes()) + ':' + pad(date.getSeconds()) + tz;
 	}
 
-	function fromTimestamp (str) {
+	function fromTimestamp(str) {
 		// 2015-05-26T00:00:00
 
 		// strip timezone // 2015-05-26T00:00:00Z
@@ -551,15 +561,15 @@
 		return new Date(-1);
 	}
 
-	function isTimestamp (str) {
+	function isTimestamp(str) {
 		return typeof str === 'string' && tsRegExp.test(str);
 	}
 
-	function toUtcTimestamp (date) {
+	function toUtcTimestamp(date) {
 		return toTimestamp(toUTC(date));
 	}
 
-	function fromUtcTimestamp (date) {
+	function fromUtcTimestamp(date) {
 		date = toDate(date);
 		const tz = date.getTimezoneOffset() * 60000;
 		const time = date.getTime() + tz;
@@ -567,12 +577,12 @@
 		return new Date(tzDate.toUTCString());
 	}
 
-	function toUTC (date) {
+	function toUTC(date) {
 		date = toDate(date);
 		return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds()));
 	}
 
-	function is (d1) {
+	function is(d1) {
 		return {
 			less: function (d2) {
 				return isLess(d1, d2);
