@@ -80,7 +80,6 @@
 				if (hr === 0) {
 					hr = 12;
                 }
-                console.log('padded');
 				return pad(hr);
 			},
 			h: function (date) {
@@ -91,7 +90,6 @@
 				if (hr === 0) {
 					hr = 12;
                 }
-                console.log('unpadded');
 				return hr;
 			},
 			m: function (date) {
