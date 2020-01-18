@@ -9,8 +9,7 @@ To install:
 
     yarn add @clubajax/dates
 
-You may also use `bower` or `npm` if you prefer. Or, you can clone the repository with your generic clone commands as a standalone 
-repository or submodule.
+You may also use `bower` or `npm` if you prefer. Or, you can clone the repository with your generic clone commands as a standalone repository or submodule.
 
 	git clone git://github.com/clubajax/dates.git
 
@@ -39,7 +38,8 @@ repository or submodule.
         
         time based examples:
         'yyyy/MM/dd h:m A' => 2016/01/26 04:23 AM
-        'h:m:s a' => 04:23:32 pm
+        'h:m:s a' => 4:23:32 pm
+        'hh:m:s a' => 04:23:32 pm
         'H:m' => 16:23
         
    ```

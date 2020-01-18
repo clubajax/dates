@@ -36,7 +36,7 @@
 
 		// https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html
 		//
-		datePattern = /yyyy|yy|MMMM|MMM|MM|M|dd|d|E|e|H|h|m|s|A|a/g,
+		datePattern = /yyyy|yy|MMMM|MMM|MM|M|dd|d|E|e|H|hh|h|m|s|A|a/g,
 		datePatternLibrary = {
 			yyyy: function (date) {
 				return date.getFullYear();
@@ -79,7 +79,8 @@
 				}
 				if (hr === 0) {
 					hr = 12;
-				}
+                }
+                console.log('padded');
 				return pad(hr);
 			},
 			h: function (date) {
@@ -89,7 +90,8 @@
 				}
 				if (hr === 0) {
 					hr = 12;
-				}
+                }
+                console.log('unpadded');
 				return hr;
 			},
 			m: function (date) {
@@ -204,8 +206,7 @@
 			month = +parts[1];
 			day = +parts[3];
 			year = +parts[5];
-			// rough check of a year
-			if (year > 1900 && year < 2100 && 1 <= month && month <= 12 && 1 <= day &&
+			if (1 <= month && month <= 12 && 1 <= day &&
 				day <= (month === 2 && isLeapYear(year) ? 29 : monthLengths[month - 1])) {
 				return true;
 			}
@@ -345,13 +346,14 @@
 		// 'mm-dd-yyyy' 01-01-2015
 		// 'm/d/yy' 12/25/15
 		// time:
-		// 'yyyy/MM/dd h:m A' 2016/01/26 04:23 AM
+		// 'yyyy/MM/dd h:m A' 2016/01/26 4:23 AM
+		// 'yyyy/MM/dd hh:m A' 2016/01/26 04:23 AM
 
 		if (/^m\/|\/m\//.test(pattern)) {
 			console.warn('Invalid pattern. Did you mean:', pattern.replace('m', 'M'));
 		}
 
-		return pattern.replace(datePattern, function (name) {
+        return pattern.replace(datePattern, function (name) {
 			return datePatternLibrary[name](date);
 		});
 	}

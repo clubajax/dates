@@ -68,10 +68,12 @@
 				expect(dates.format(date, 'MMM dd, yyyy')).to.equal('Jan 01, 2015');
 				expect(dates.format(date, 'MM/dd/yy')).to.equal('01/01/15');
 				expect(dates.format(date, 'yyyy/MM/dd')).to.equal('2015/01/01');
-				expect(dates.format(ts, 'MMM d, yyyy')).to.equal('Jan 26, 2016');
-				expect(dates.format(ts, 'yyyy/MM/dd h:m A')).to.equal('2016/01/26 04:23 PM');
+                expect(dates.format(ts, 'MMM d, yyyy')).to.equal('Jan 26, 2016');
+                console.log(' - ', dates.format(ts, 'yyyy/MM/dd h:m A'));
+                expect(dates.format(ts, 'yyyy/MM/dd h:m A')).to.equal('2016/01/26 4:23 PM');
+                expect(dates.format(ts, 'yyyy/MM/dd hh:m A')).to.equal('2016/01/26 04:23 PM');
 				expect(dates.format(date, 'yyyy/MM/dd h:m A')).to.equal('2015/01/01 12:00 AM');
-				expect(dates.format(ts, 'h:m A')).to.equal('04:23 PM');
+				expect(dates.format(ts, 'h:m A')).to.equal('4:23 PM');
 				expect(dates.format(ts, 'H:m a')).to.equal('16:23 pm'); // invalid! - 24 hr clock with am
 				expect(dates.format(ts, 'H:m:s a')).to.equal('16:23:32 pm'); // invalid!
 				expect(dates.format(ts, 'yyyy/MM/dd, E')).to.equal('2016/01/26, Tuesday');
@@ -92,9 +94,6 @@
 			});
 
             test('it should check valid dates', function () {
-
-				expect(dates.isValid('12/12/201')).to.equal(false);
-
 				expect(dates.isValid('11/20/1980')).to.equal(true);
 				expect(dates.isValid('2015-05-26T00:00:00')).to.equal(true);
 
@@ -107,7 +106,6 @@
 				expect(dates.isValid('2000-02-30T00:00:00')).to.equal(false);
 
 				expect(dates.isValid('55/01/1981')).to.equal(false);
-				expect(dates.isValid('01/01/198')).to.equal(false);
 
 				expect(dates.isValid(new Date())).to.equal(true);
 				expect(dates.isValid(new Date(1999, 1, 1))).to.equal(true);
@@ -123,7 +121,16 @@
 				expect(dates.isValid('12/25/1982 02:20:70')).to.equal(false);
 				expect(dates.isValid('12/25/1982 02:60:01')).to.equal(false);
 				expect(dates.isValid('12/25/1982 24:20:00')).to.equal(false);
-				expect(dates.isValid('12/25/1982 13:20 am')).to.equal(false);
+                expect(dates.isValid('12/25/1982 13:20 am')).to.equal(false);
+                
+                // added extreme years
+                expect(dates.isValid('12/31/1800 11:20 am')).to.equal(true);
+                expect(dates.isValid('12/31/2100 11:20 am')).to.equal(true);
+                expect(dates.isValid('12/31/800 11:20 am')).to.equal(true);
+                expect(dates.isValid('12/31/3100 11:20 am')).to.equal(true);
+
+                expect(dates.isValid('12/31/1 11:20 am')).to.equal(true);
+                expect(dates.isValid('12/31/9999 11:20 am')).to.equal(true);
             });
 
             test('it should convert date strings toDate', function () {
@@ -280,7 +287,7 @@
                 expect(dates.copy('not a date')).to.equal('not a date');
             });
 
-            test.only('it should compare', function () {
+            test('it should compare', function () {
                 const
                     d1 = new Date(2016, 2, 5),
                     d2 = new Date(2017, 2, 5),
@@ -334,7 +341,7 @@
 				expect(dates.is('2:00 pm').time()).to.equal(true);
 				expect(dates.is('1/1/2017').date()).to.equal(true);
 
-				expect(dates.is('12/12/17').date()).to.equal(false);
+				expect(dates.is('12/12/17').date()).to.equal(true);
 				expect(dates.is('12/122017').date()).to.equal(false);
 				expect(dates.is('02:00').time()).to.equal(false);
 				expect(dates.is('23:00').time()).to.equal(false);
